@@ -3,12 +3,16 @@ package com.admin.mobile.sale.service;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ImageService {
 	
-	private static final String IMAGE_DIC = "C:/Users/PC/Desktop/IMAGE/";
+	@Value("${image.path}")
+	private String IMAGE_DIC;
+	
 	public static final String PHONE_PATH = "phone-image/";
 	
 	public byte[] readFileFrom(String dicPath, String imageName) throws IOException {

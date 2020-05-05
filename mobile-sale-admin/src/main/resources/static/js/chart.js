@@ -28,7 +28,7 @@ $(function(){
 	$("#btn-filter").click(function(){
 		let val = $("#filterBy").val();
 		let dt;
-		if((dt=val.split("-")).length===1){// fill by year
+		if((dt=val.split("-")).length===1){//fill by year
 			getYear(val);
 		}else{
 			getMonth(dt[0],dt[1]);
@@ -46,35 +46,28 @@ let options = {
 		scales: {
 			yAxes: [{
 				 min:0,
-				type: 'linear', // only linear but allow scale type
-								// registration. This allows extensions to exist
-								// solely for log scale for instance
+				type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
 				display: true,
 				position: 'left',
 				id: 'y-axis-1',
 				 ticks: {
-		                suggestedMin: 0,    // minimum will be 0, unless there
-											// is a lower value.
+		                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
 		                // OR //
 		                beginAtZero: true   // minimum value will be 0.
 		            }
 			}, {
-				type: 'linear', // only linear but allow scale type
-								// registration. This allows extensions to exist
-								// solely for log scale for instance
+				type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
 				display: true,
 				position: 'right',
 				id: 'y-axis-2',
 				 ticks: {
-		                suggestedMin: 0,    // minimum will be 0, unless there
-											// is a lower value.
+		                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
 		                // OR //
 		                beginAtZero: true   // minimum value will be 0.
 		            },
 				// grid line settings
 				gridLines: {
-					drawOnChartArea: false, // only want the grid lines for one
-											// axis to show up
+					drawOnChartArea: false, // only want the grid lines for one axis to show up
 				},
 			}],
 		}
@@ -90,35 +83,28 @@ let xOptions = {
 	scales: {
 		xAxes: [{
 			 min:0,
-			type: 'linear', // only linear but allow scale type registration.
-							// This allows extensions to exist solely for log
-							// scale for instance
+			type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
 			display: true,
 			position: 'bottom',
 			id: 'x-axis-1',
 			 ticks: {
-	                suggestedMin: 0,    // minimum will be 0, unless there is a
-										// lower value.
+	                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
 	                // OR //
 	                beginAtZero: true   // minimum value will be 0.
 	            }
 		}, {
-			type: 'linear', // only linear but allow scale type registration.
-							// This allows extensions to exist solely for log
-							// scale for instance
+			type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
 			display: true,
 			position: 'top',
 			id: 'x-axis-2',
 			 ticks: {
-	                suggestedMin: 0,    // minimum will be 0, unless there is a
-										// lower value.
+	                suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
 	                // OR //
 	                beginAtZero: true   // minimum value will be 0.
 	            },
 			// grid line settings
 			gridLines: {
-				drawOnChartArea: false, // only want the grid lines for one axis
-										// to show up
+				drawOnChartArea: false, // only want the grid lines for one axis to show up
 			},
 		}],
 	}
@@ -197,21 +183,21 @@ function sum(...args){
 	return total;
 }
 
-
 $(function(){
-	reanderChart("/topProduct");
-	$("#renderChart").change(function(){
-		if(this.value==='top-sp'){
-			reanderChart("/topProduct");
-		} else if(this.value==='top-hang'){
-			reanderChart("/topHang");
-		}
+	$(function(){
+		reanderTopProduct();
+		$("#renderChart").change(function(){
+			if(this.value==='top-sp'){
+				reanderTopProduct();
+			} else if(this.value==='top-hang'){
+				reanderTopHang();
+			}
+		})
 	})
 })
-
 var topChart;
-function reanderChart(url){
-	$.get("/chart" + url).done(function(data){
+function reanderTopProduct(){
+	$.get("/chart/topProduct").done(function(data){
 		topChart && topChart.destroy();
 		topChart = new Chart("topProduct",{
 			  type: 'horizontalBar',
@@ -220,7 +206,41 @@ function reanderChart(url){
 			    datasets: [
 			    	{
 					      label: "Tống sản phẩm bán được",
-					      data: data.map(i=>i.totalCount),					     
+					      backgroundColor: "#4e73df",
+					      data: data.map(i=>i.totalCount),
+					      xAxisID: 'x-axis-2',
+					     
+					      fill:false,
+					    },
+			    	
+			    	{
+			    	fill:false,
+			      label: "Tống doanh thu",
+			      backgroundColor: "#F73620",
+			      data: data.map(i=>i.totalMoney),
+			      xAxisID: 'x-axis-1',
+			      type:'horizontalBar'
+			    },
+			    ],
+			  },
+			  options: xOptions
+			});
+	})
+}
+function reanderTopHang(){
+	$.get("/chart/topHang").done(function(data){
+		topChart && topChart.destroy();
+		topChart = new Chart("topProduct",{
+			  type: 'horizontalBar',
+			  data: {
+			    labels: data.map(i=>i.name),
+			    datasets: [
+			    	{
+					      label: "Tống sản phẩm bán được",
+					      backgroundColor: "#4e73df",
+					      data: data.map(i=>i.totalCount),
+					      xAxisID: 'x-axis-2',
+					     
 					      fill:false,
 					    },
 			    	

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Quản lý sản phẩm</title>
+<th:block th:replace="layout/comon :: css"></th:block>
+<link rel="stylesheet" type="text/css" href="/vendor/jquery-ui-1.12.1.custom/jquery-ui.css">
+</head>
+<body id="page-top">
+  <div id="wrapper">
+    <th:block th:replace="layout/sidebar :: sidebar"></th:block>
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <th:block th:replace="layout/header :: header"></th:block>
+        <div class="container-fluid">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800" th:unless="${isNew}">Sửa sản phẩm</h1>
+            <h1 class="h3 mb-0 text-gray-800" th:if="${isNew}">Thêm mới sản phẩm</h1>
+          </div>
+          
+          <div class="card shadow mb-4">
+            <form th:action="|/admin/quan-ly-san-pham/${isNew!=null ? 'them' : 'edit'}|" th:object="${sp}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:unless="${isNew}" th:field="*{idSanPham}">
+            <input type="hidden" th:unless="${isNew}" th:field="*{imageUrl}">
+            <div class="card-header py-3">
+              <div class="row">
+                <div>
+                  <h6 class="m-0 font-weight-bold text-primary" th:text="*{name}">Samsung galaxy</h6>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" id="dataSP">
+            <div class="row">
+             <div th:unless="${isNew}">
+                    <img th:alt="*{name}"  th:src="|/assets/phone-image/*{imageUrl}|">
+                    <span><a href="#" th:text="*{name}"></a></span>
+                  </div>
+                  </div>
+                   <div class="form-group col-6">
+                      <label th:for="name">Ảnh</label>
+                      <input type="file" class="form-control" th:field="*{image}">
+                      <span style="color: red; font-style: italic;" 
+                        th:if="${#fields.hasErrors('image')}" th:errors="*{image}" ></span>
+                   </div>
+              <div class="row">
+                <div class="col-md-6">
+                	<h3>Thông tin chung</h3>
+                
+                 
+                  <div class="form-group">
+                      <label th:for="name">Tên sản phẩm</label>
+                      <input type="text" class="form-control" th:field="*{name}">
+                      <span style="color: red; font-style: italic;" 
+                      th:if="${#fields.hasErrors('name')}"
+                      th:errors="${sp.name}"></span>
+                   </div>
+                   <div class="form-group">
+                      <label th:for="idHang">Hãng</label>
+                      <select th:field="*{idHang}" class="form-control">
+                        <option th:each="hang : ${listHang}" th:text="${hang.name}" th:value="${hang.idHang}"></option>
+                      </select>
+                      
+                   </div>
+                   <div class="form-group">
+                      <label th:for="price">Giá sản phẩm</label>
+                      <input type="number" class="form-control" step="10000" th:field="*{price}">
+                      <span style="color: red; font-style: italic;" 
+                        th:if="${#fields.hasErrors('price')}"
+                        th:errors="${sp.price}"></span>
+                   </div>
+                   <div class="form-group">
+                      <label th:for="descripsion">Mô tả</label>
+                      <textarea class="form-control" th:field="*{descripsion}" rows="18">
+                      </textarea>
+                      <span style="color: red; font-style: italic;" 
+                        th:if="${#fields.hasErrors('descripsion')}"
+                        th:errors="${sp.descripsion}"></span>
+                   </div>
+                </div>
+                <div class="col-md-6">
+                	<h4>Thông tin chi tiêt</h4>
+                	<div class="form-group">
+                      <label>Số lượng</label>
+                      <input type="number" class="form-control">
+                   </div>
+                   <div class="form-group">
+                      <label>Dung lượng pin</label>
+                      <input type="number" class="form-control">
+                   </div>
+                   <div class="form-group">
+                      <label>Thông tin sim</label>
+                      <input type="text" class="form-control">
+                   </div>
+                   <div class="form-group">
+                      <label>Kích thước màn hình</label>
+                      <input type="number" class="form-control">
+                   </div>
+                   <div class="form-group">
+                      <label>Công nghệ màn hình</label>
+                      <input type="text" class="form-control">
+                   </div>
+                   <div class="form-group">
+                      <label>Độ phân giải màn hình</label>
+                      <input type="text" class="form-control">
+                   </div>
+                   <div class="form-group">
+                      <label>Bộ nhớ trong</label>
+                      <input type="text" class="form-control">
+                   </div>
+                   <div class="form-group">
+                      <label>CPU</label>
+                      <input type="text" class="form-control">
+                   </div>
+                   <div class="form-group">
+                      <label>Camera</label>
+                      <input type="number" class="form-control">
+                   </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer d-flex" style="justify-content: space-evenly;">
+                <button class="btn btn-danger" type="button" style="width: 175px" onclick="location.href='/admin/quan-ly-san-pham'">Quay lại</button>
+                <button class="btn btn-success" type="submit" style="width: 175px">Lưu</button>
+            </div>
+            </form>
+          </div>
+        </div>
+          
+        </div>
+      </div>
+    </div>
+  <th:block th:replace="layout/footer :: footer"></th:block>
+  <th:block th:replace="layout/comon :: js"></th:block>
+  <script type="text/javascript" src="../static/js/quanLySanPham.js" data-th-src="@{/js/quanLySanPham.js}"></script>
+</body>
+</html>

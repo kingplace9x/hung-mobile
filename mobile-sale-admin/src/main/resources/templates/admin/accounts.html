@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Quản lý tài khoản</title>
+<th:block th:replace="layout/comon :: css"></th:block>
+<script th:if="${param.deleteSuccess}">
+      alert("Xóa thành công");
+      location.href = "/admin/accounts";
+</script>
+<script th:if="${param.saveSuccess}">
+      alert("Update thành công");
+      location.href = "/admin/accounts";
+</script>
+<script th:if="${param.deleteError}">
+      alert("Bạn không thể xóa tài khoản này");
+      location.href = "/admin/accounts";
+</script>
+<style type="text/css">
+  tr.disable{
+    color: #858796;
+    background-color: rgba(0,0,0,.075);
+    background-image: linear-gradient(45deg,rgba(255,255,255,.3) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.3) 50%,rgba(255,255,255,.3) 75%,transparent 75%,transparent);
+    background-size: 1rem 1rem;
+  }
+  tr.disable button, tr.disable a{
+    pointer-events:none;
+  }
+</style>
+</head>
+<body id="page-top">
+  <div id="wrapper">
+    <th:block th:replace="layout/sidebar :: sidebar"></th:block>
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <th:block th:replace="layout/header :: header"></th:block>
+        <div class="container-fluid">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Quản lý tài khoản</h1>
+          </div>
+          
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <div class="row">
+                <div class="col-md-4">
+                  <h6 class="m-0 font-weight-bold text-primary">Danh sách các Tài khoản</h6>
+                  <a href="/admin/accounts/new" class="btn btn-sm btn-success"><i class="fas fa-user-plus"></i> Thêm mới</a>
+                </div>
+                <div class="col-md-8 d-flex justify-content-center align-self-center">
+                  <form class="form-inline" id="formSearch">
+                    <div class="form-group">
+                        <label for="tensp">Số điện thoại hoặc email khách hàng: </label>
+                        <input type="text" name="name" class="form-control form-control-sm m-1"  placeholder="SĐT hoặc email...">
+                    </div>
+                    <div class="form-group">
+                        <label for="hang">Tình trạng: </label>
+                        <select class="form-control form-control-sm m-1" name="status">
+                          <option value="0" >Tất cả</option>
+                          <option th:each="status : ${T(com.admin.mobile.sale.enums.StatusOrder).values()}"
+                            th:text="${status.label}" th:value="${status}"
+                          />
+                        </select>
+                    </div>
+                    <button class="btn btn-sm btn-primary m-1" type="submit">Tìm kiếm</button>
+                    <button class="btn btn-sm btn-danger m-1" type="reset" onclick="location.href='/admin/don-hang'">Reset</button>
+                  </form>
+                </div>
+                </div>
+            </div>
+            
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="dataTable">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Họ tên</th>
+                      <th>Tên đăng nhập</th>
+                      <th>Số điện thoại</th>
+                      <th>Số lượng câu trả lời</th>
+                      <th>Số đơn hàng xác nhận</th>
+                      <th>Quyền hạn</th>
+                      <th>Chỉnh sửa</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="nv: ${page}" th:class="${nv.status ? '' : 'disable'}" th:title="${nv.status ? nv.fullName : 'Đã xóa'}">
+                      <th> <img th:src="${nv.image}" width="60px" th:alt="${nv.fullName}"> </th>
+                      <th th:text="${nv.fullName}">Họ tên</th>
+                      <th th:text="${nv.username}">Tên đăng nhập</th>
+                      <th th:text="${nv.phone}">Số điện thoại</th>
+                      <th th:text="${#lists.size(nv.listHoiDap)}">Số lượng câu trả lời</th>
+                      <th th:text="${#lists.size(nv.listHoaDon)}">Số đơn hàng xác nhận</th>
+                      <th th:text="${nv.role}">Quyền hạn</th>
+                      <td>
+                      <a th:href="@{'/admin/accounts/edit/'+${nv.idNhanVien}}" class="btn btn-sm btn-info"><i class="far fa-edit"></i> Sửa</a>
+                      <form action="/admin/accounts/delete" style="display: inline;" method="post"
+                        onsubmit="return confirm('Bạn có chắc chắc xóa nhân viên này')">
+                        <input type="hidden" name="accountId" th:value="${nv.idNhanVien}">
+                        <button class="btn btn-sm btn-danger"><i class="far fa-trash-alt"></i> Xóa</button> 
+                      </form>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div>
+                    <ul class="pagination" th:if="${page.totalElements>10}">
+                      <li class="paginate_button page-item previous" th:classappend="${!page.hasPrevious()} ? 'disabled'"><a href="javascript:void(0)"class="page-link">Prev</a></li>
+                      <li class="paginate_button page-item"
+                        th:onclick="|location.href='/admin/accounts?page=${num}'|"
+                        th:each="num : ${#numbers.sequence(0,page.totalPages-1)}"
+                        th:classappend="${num==page.number} ?'active'"><a href="javascript:void(0)" class="page-link" th:text="${num+1}">1</a></li>
+                      <li class="paginate_button page-item next" th:classappend="${!page.hasNext()} ? 'disabled'"><a href="javascript:void(0)" class="page-link">Next</a></li>
+                    </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+          
+        </div>
+      </div>
+    </div>
+    
+      
+  <th:block th:replace="layout/footer :: footer"></th:block>
+  <th:block th:replace="layout/comon :: js"></th:block>
+</body>
+</html>

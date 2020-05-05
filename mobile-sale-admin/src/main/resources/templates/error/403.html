@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin</title>
+<th:block th:replace="layout/comon :: css"></th:block>
+</head>
+<body id="page-top">
+  <div id="wrapper">
+    <th:block th:replace="layout/sidebar :: sidebar"></th:block>
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <th:block th:replace="layout/header :: header"></th:block>
+        <div class="container-fluid">
+          <h1 style="font-size: 72px">403</h1>
+          <h2>OOps.. Bạn không có quyền truy cập trang web này!</h2>
+          <a href="/">Quay về trang chủ</a>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+    <th:block th:replace="layout/footer :: footer"></th:block>
+  <th:block th:replace="layout/comon :: js"></th:block>
+</body>
+</html>

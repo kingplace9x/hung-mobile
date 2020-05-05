@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Quản lý đơn hàng</title>
+<th:block th:replace="layout/comon :: css"></th:block>
+
+</head>
+<body id="page-top">
+  <div id="wrapper">
+    <th:block th:replace="layout/sidebar :: sidebar"></th:block>
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <th:block th:replace="layout/header :: header"></th:block>
+        <div class="container-fluid">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Quản lý đơn hàng</h1>
+          </div>
+          
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <div class="row">
+                <div class="col-md-4">
+                  <h6 class="m-0 font-weight-bold text-primary">Danh sách các đơn hàng</h6>
+                </div>
+                <div class="col-md-8 d-flex justify-content-center align-self-center">
+                  <form class="form-inline" id="formSearch">
+                    <div class="form-group">
+                        <label for="tensp">Số điện thoại hoặc email khách hàng: </label>
+                        <input type="text" name="name" class="form-control form-control-sm m-1"  placeholder="SĐT hoặc email...">
+                    </div>
+                    <div class="form-group">
+                        <label for="hang">Tình trạng: </label>
+                        <select class="form-control form-control-sm m-1" name="status">
+                          <option value="0" >Tất cả</option>
+                          <option th:each="status : ${T(com.admin.mobile.sale.enums.StatusOrder).values()}"
+                            th:text="${status.label}" th:value="${status}"
+                          />
+                        </select>
+                    </div>
+                    <button class="btn btn-sm btn-primary m-1" type="submit">Tìm kiếm</button>
+                    <button class="btn btn-sm btn-danger m-1" type="reset" onclick="location.href='/admin/don-hang'">Reset</button>
+                  </form>
+                </div>
+                </div>
+            </div>
+            
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="dataTable">
+                  <thead>
+                    <tr>
+                      <th>Người đặt</th>
+                      <th>Địa chỉ</th>
+                      <th>Số điện thoại</th>
+                      <th>Số lượng sản phẩm</th>
+                      <th>Ngày đặt</th>
+                      <th>Tổng tiền</th>
+                      <th>Tình trạng</th>
+                      <th>Xác nhận</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="order: ${page}" >
+                      <th th:text="${order.nguoiDat}">Người đặt</th>
+                      <th th:text="${order.diaChi}">Địa chỉ</th>
+                      <th th:text="${order.phone}">Địa chỉ</th>
+                      <th th:text="${order.count}">Số lượng sản phẩm</th>
+                      <th th:text="${#dates.format(order.date,'hh:mm dd/MM/yyyy')}">Ngày đặt</th>
+                      <th th:text="${#numbers.formatDecimal(order.total, 0, 'POINT', 0, 'POINT') + ' VNĐ'}">Tổng tiền</th>
+                      <th> <span class="badge" th:classappend="${order.status.badge}" th:text="${order.status.label}"></span></th>
+                      <th>
+                      <button class="btn btn-primary btn-sm" type="button" th:onclick="|$('#detail${order.idHoaDon}').modal()|">Xem chi tiết</button>
+                      <button th:data-id="${order.idHoaDon}" 
+                          class="btn btn-sm btn-success confirmOrder"
+                          th:unless="${order.status eq T(com.admin.mobile.sale.enums.StatusOrder).HoanThanh or order.status eq T(com.admin.mobile.sale.enums.StatusOrder).DaHuy}"
+                          th:data-status="${order.status}"> Xác nhận đơn hàng</button> </th>
+                    </tr>
+                  </tbody>
+                </table>
+                <div>
+                    <ul class="pagination" th:if="${page.totalElements>10}">
+                      <li class="paginate_button page-item previous" th:classappend="${!page.hasPrevious()} ? 'disabled'"><a href="javascript:void(0)"class="page-link">Prev</a></li>
+                      <li class="paginate_button page-item"
+                        th:onclick="|search(searchDTO,${num})|"
+                        th:each="num : ${#numbers.sequence(0,page.totalPages-1)}"
+                        th:classappend="${num==page.number} ?'active'"><a href="javascript:void(0)" class="page-link" th:text="${num+1}">1</a></li>
+                      <li class="paginate_button page-item next" th:classappend="${!page.hasNext()} ? 'disabled'"><a href="javascript:void(0)" class="page-link">Next</a></li>
+                    </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+          
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal fade" th:each="hd: ${page}" th:id="|detail${hd.idHoaDon}|" tabindex="-1" role="dialog" th:aria-labelledby="|label${hd.idHoaDon}|" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" th:id="|label${hd.idHoaDon}|">Chi tiết đơn hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" style="padding: 40px;">
+                <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="sp : ${hd.listCart}">
+                    <th>
+                      <a href="#">
+                        <img height="60px" alt="" th:src="|/assets/phone-image/${sp.image}|"/>
+                      </a>
+                    </th>
+                    <th> 
+                      <a href="#" th:text="${sp.tenSanPham}">
+                      </a>
+                    </th>
+                    <th th:text="${#numbers.formatDecimal(sp.giaSanPham, 0, 'POINT', 0, 'POINT') + ' VNĐ'}">Giá</th>
+                    <th th:text="${sp.soLuong}">Số lượng</th>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th></th>
+                    <th colspan="3">
+                      <h4>Tổng tiền: <span style="color: red; font-size: 20px; font-weight: bold;"
+                        th:text="${#numbers.formatDecimal(hd.total, 0, 'POINT', 0, 'POINT') + ' VNĐ'}"
+                      >13213214 VNĐ</span></h4>
+                    </th>
+                  </tr>
+                </tfoot>
+              </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+      <form th:action="@{/admin/don-hang/xac-nhan}" method="post">
+        <input type="hidden" name="idDonHang" id="idDonHang">
+        <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Xác nhận đơn hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" style="padding: 40px;">
+                <div class="form group" th:each="status : ${T(com.admin.mobile.sale.enums.StatusOrder).values()}">
+                  <input type="radio" name="status" th:value="${status}" th:id="${status}">
+                  <label th:for="${status}">
+                    <span class="badge" th:classappend="${status.badge}" th:text="${status.label}"></span>
+                  </label>
+                </div> 
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Xác nhận</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+  <th:block th:replace="layout/footer :: footer"></th:block>
+  <th:block th:replace="layout/comon :: js"></th:block>
+  <script type="text/javascript" src="../static/js/donhang.js" data-th-src="@{/js/donhang.js}"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin</title>
+<th:block th:replace="layout/comon :: css"></th:block>
+<style type="text/css">
+  .dasboard .card{
+    transition: .2s;
+  }
+  .dasboard .card:hover{
+    transform: scale(1.1);
+    cursor: pointer;
+  }
+
+</style>
+</head>
+<body id="page-top">
+  <div id="wrapper">
+    <th:block th:replace="layout/sidebar :: sidebar"></th:block>
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <th:block th:replace="layout/header :: header"></th:block>
+        <div class="container-fluid">
+          <div class="d-sm-flex align-items-center justify-content-center mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Trang cá nhân</h1>
+          </div>
+          <div class="">
+              <div class="d-sm-flex justify-content-center align-items-center">
+                Avatar: 
+                <img th:alt="${loginUser.fullName}" th:src="${loginUser.image}">
+              </div>
+              <div class="d-sm-flex justify-content-center align-items-center">
+                <span>Tên đăng nhập: </span>
+                <b th:text="${loginUser.username}"></b>
+              </div>
+              <div class="d-sm-flex justify-content-center align-items-center">
+                <span>Họ tên: </span>
+                <b th:text="${loginUser.fullName}"></b>
+              </div>
+              <div class="d-sm-flex justify-content-center align-items-center">
+                <span>Số điện thoại: </span>
+                <b th:text="${loginUser.phone}"></b>
+              </div>
+              <div class="d-sm-flex justify-content-center align-items-center">
+                <span>Quền hạn: </span>
+                <b th:text="${loginUser.role}"></b>
+              </div>
+              <div class="d-sm-flex justify-content-center align-items-center">
+                  <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#changePassModal">
+                  
+                    <i class="fa fa-edit"></i>
+                    Đổi mật khẩu
+                  </button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="changePassModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Đổi mật khẩi</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="/admin/account/change-password" th:object="${updatePasswordForm}" method="post">
+      <div class="modal-body p-3">
+        <div class="form-group">
+          <input type="password" class="form-control" th:field="*{currentPassword}" placeholder="Mật khẩu hiện tại">
+          <span th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control" th:field="*{newPassword}" placeholder="Mật khẩu mới">
+          <span th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control" th:field="*{confirmPassword}" placeholder="Xác nhận mật khẩu">
+          <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="text-danger"></span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+    <th:block th:replace="layout/footer :: footer"></th:block>
+  <th:block th:replace="layout/comon :: js"></th:block>
+  <script th:if="${err!=null or param.err!=null}">
+  	$(function(){
+  		$('#changePassModal').modal();
+  	})
+  </script>
+  <script th:if="${param.success}">
+    alert("Đổi mật khẩu thành công!")
+  </script>
+</body>
+</html>

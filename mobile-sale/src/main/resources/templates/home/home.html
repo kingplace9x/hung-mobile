@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trang chủ</title>
+<th:block th:replace="layout/comon :: css"></th:block>
+<link rel="stylesheet" type="text/css" href="styles/shop_styles.css">
+<link rel="stylesheet" type="text/css" href="styles/shop_responsive.css">
+<link rel="stylesheet" type="text/css" href="plugins/jquery-ui-1.12.1.custom/jquery-ui.css">
+<style>
+	ul > li.active{
+		background-color: skyblue;
+	}
+	.pro-rating{
+      position: absolute;
+      left: calc(100% - 122px);
+      margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+	<section>
+		<div th:replace="layout/header :: header"></div>
+		
+		<div>
+			<div class="shop">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-3">
+
+					<!-- Shop Sidebar -->
+					<div class="shop_sidebar">
+
+						<div class="sidebar_section filter_by_section">
+							<div class="sidebar_title">Lọc theo</div>
+							<div class="sidebar_subtitle">Giá sản phẩm</div>
+							<div class="filter_price">
+								<div id="slider-range" class="slider_range"></div>
+								<p>Từ: </p>
+								<p><input type="text" id="amount" class="amount" style="border:0; font-weight:bold;"></p>
+							</div>
+						</div>
+						<div class="sidebar_section">
+							<button id="filter" class="btn btn-sm btn-success">Lọc <i class="fas fa-filter"></i></button>
+						</div>
+						<div class="sidebar_section">
+							<div class="sidebar_subtitle brands_subtitle">Sắp xếp</div>
+							<select id="sort" name="sort" class="form-control">
+								<option value="">Không sắp</option>
+								<option value="price,desc">Giá từ cao đến thấp</option>
+								<option value="price">Giá từ thấp đến cao</option>
+							</select>
+						</div>
+						<div class="sidebar_section">
+							<div class="sidebar_subtitle brands_subtitle">Hãng</div>
+							<ul class="brands_list">
+								<li class="brand" th:each="hang: ${listHang}"><a href="javascript:void(0);" th:id-hang="${hang.idHang}" class="list-hang" th:text="${hang.name}">Apple</a></li>
+							</ul>
+						</div>
+						
+					</div>
+				</div>
+
+				<div class="col-lg-9">
+					
+					<!-- Shop Content -->
+
+					<div class="shop_content">
+
+						<div style="position: relative; height: 1012px;">
+		
+							<!-- Product Item -->
+							<div th:each="product, row: ${page}" >
+								<div class="product_item" th:style="|position: absolute; left: ${(row.index%5)*177}px; top: ${(row.index/5)*253}px;|" >
+									<div class="product_border"></div>
+									<div th:onclick="|location.href='/product?id=${product.idSanPham}'|" th:title="${product.name}">
+										<div class="product_image d-flex flex-column align-items-center justify-content-center">
+										<img th:src="@{'assets/phone-image/' + ${product.image} }" alt=""></div>
+                                            <div th:if="${!#lists.isEmpty(product.listDanhGia)}" th:with="rat=${T(com.sale.cellphone.utils.DanhGiaUtils).average(product.listDanhGia)}"
+                                            	class="pro-rating">
+                                              <i class="fas fa-star"
+                                                th:each="item : ${#numbers.sequence(1,5)}"
+                                                th:style="${rat >= item ? 'color:#e06e0c' : 'color:gray'}"></i>
+                                            </div>
+										<div class="product_content">
+											<div class="product_price" th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'POINT') + ' VNĐ'}">$379</div>
+											<div class="product_name"><div><a href="#" tabindex="0" th:text="${product.name}">Canon STM Kit...</a></div></div>
+										</div>
+									</div>
+									<div class="product_fav" th:onclick="|addCart(${product.idSanPham})|"
+										data-toggle="tooltip" data-placement="right" title="Thêm vào giỏ hàng"
+									 ><i class="fas fa-shopping-cart"></i></div>
+									<ul class="product_marks">
+										<li class="product_mark product_discount">%</li>
+									</ul>
+								</div>
+							</div>
+
+						</div>
+
+
+
+						<div class="shop_page_nav d-flex flex-row">
+							<div class="page_prev d-flex flex-column align-items-center justify-content-center"><i class="fas fa-chevron-left"></i></div>
+							<ul class="page_nav d-flex flex-row" >
+								<li th:each="index, stat : ${#numbers.sequence(1,page.totalPages)}"
+									th:class="${page.number==index-1} ? 'active'"
+								><a href="#" th:text="${index}"></a></li>
+							</ul>
+							<div class="page_next d-flex flex-column align-items-center justify-content-center"><i class="fas fa-chevron-right"></i></div>
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+			
+		</div>
+		
+		<div th:replace="layout/footer :: footer"></div>
+		<th:block th:include="layout/comon :: js"></th:block>
+		
+	</section>
+	<div id="myModal" class="modal fade" role="dialog">
+		<div class="modal-dialog" th:fragment="cart-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Giỏ hàng</h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body" >
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</body>
+</html>

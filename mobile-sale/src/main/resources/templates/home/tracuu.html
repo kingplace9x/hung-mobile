@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tra cứu đơn hàng</title>
+<th:block th:replace="layout/comon :: css"></th:block>
+</head>
+<body>
+	<section>
+		<div th:replace="layout/header :: header"></div>
+		<div class="container">
+			
+			<div class="row">
+			<div class="col-md-2"></div>
+			<div class="accordion col-md-8" id="accordionExample" >
+				<form action="tra-cuu-don-hang" method="post">
+					<div class="d-flex" style="width: 100%; margin: 50px auto;">
+						<input type="text" placeholder="Nhập email hoặc số điện thoại của bạn" name="email"
+						style="margin: 0 20px"
+							class="form-control" />
+						<button class="btn btn-success">Tra cứu</button>
+					</div>
+				</form>
+				<h3 th:if="${not #lists.isEmpty(listHoaDon)}">Kết quả</h3>
+				<div class="card" th:each="hoaDon : ${listHoaDon}" th:if="${not #lists.isEmpty(listHoaDon)}">
+				
+					<div class="card-header" id="headingOne">
+						<h2 class="mb-0">
+							<button class="btn btn-link" type="button" data-toggle="collapse"
+								th:data-target="|#collapse${hoaDon.idHoaDon}|" aria-expanded="true"
+								th:aria-controls="|#collapse${hoaDon.idHoaDon}|" th:text="|Hóa đơn ngày: ${#dates.format(hoaDon.date, 'dd/MM/yyyy')} Vào lúc ${#dates.format(hoaDon.date, 'hh:mm:ss')}|">Collapsible Group Item #1</button>
+							<span style="font-size: 16px;">
+							Tình trạng: <span class="badge" 
+							th:classappend="${hoaDon.status.badge}"
+							th:text="${hoaDon.status.label}">Tình trạng</span></span>
+						</h2>
+					</div>
+
+					<div th:id="|collapse${hoaDon.idHoaDon}|" class="collapse show"
+						aria-labelledby="headingOne" data-parent="#accordionExample">
+						<div class="card-body">
+							<table class="table table-hover">
+  							<thead>
+  								<tr>
+  									<th>#</th>
+  									<th>Tên sản phẩm</th>
+  									<th>Giá</th>
+  									<th>Số lượng</th>
+  								</tr>
+  							</thead>
+  							<tbody>
+  								<tr th:each="sp : ${hoaDon.listCart}">
+  									<th>
+	  									<a th:href="|/product?id=${sp.idSanPham}|">
+	  										<img height="60px" alt="" th:src="|assets/phone-image/${sp.image}|"/>
+	  									</a>
+  									</th>
+  									<th> 
+	  									<a th:href="|/product?id=${sp.idSanPham}|" th:text="${sp.tenSanPham}">
+	  									</a>
+  									</th>
+  									<th th:text="${#numbers.formatDecimal(sp.giaSanPham, 0, 'POINT', 0, 'POINT') + ' VNĐ'}">Giá</th>
+  									<th th:text="${sp.soLuong}">Số lượng</th>
+  								</tr>
+  							</tbody>
+  							<tfoot>
+  								<tr>
+  									<th></th>
+  									<th colspan="3">
+  										<h4>Tổng tiền: <span style="color: red; font-size: 20px; font-weight: bold;"
+  											th:text="${#numbers.formatDecimal(T(com.sale.cellphone.dto.CartDTO).tinhTongTien(hoaDon.listCart), 0, 'POINT', 0, 'POINT') + ' VNĐ'}"
+  										>13213214 VNĐ</span></h4>
+  									</th>
+  								</tr>
+  							</tfoot>
+  						</table>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="col-md-8" th:if="${listHoaDon==null or #lists.isEmpty(listHoaDon)}">
+				<h3 class="alert alert-danger">Không tìm thấy dữ liệu</h3>
+			</div>
+			<div class="col-md-2"></div>
+			</div>
+		</div>
+			
+		<div th:replace="layout/footer :: footer"></div>
+		<th:block th:include="layout/comon :: js"></th:block>
+	</section>
+</body>
+</html>

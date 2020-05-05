@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin</title>
+<th:block th:replace="layout/comon :: css"></th:block>
+
+</head>
+<body id="page-top">
+  <div id="wrapper">
+    <th:block th:replace="layout/sidebar :: sidebar"></th:block>
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <th:block th:replace="layout/header :: header"></th:block>
+        <div class="container-fluid">
+          <div class="card shadow mb-4">
+            <div class="card-header d-flex justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">Danh sách các hãng hiện tại</h6>
+              <button class="btn btn-success" id="addNew" title="Thêm mới"><i class="fas fa-plus"></i></button>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="dataTable">
+                  <thead>
+                    <tr>
+                      <th style="display: none">Mã Hãng</th>
+                      <th>Ảnh</th>
+                      <th>Tên hãng</th>
+                      <th>Số lượng mặt hàng</th>
+                      <th>Đã bán</th>
+                      <th>Chỉnh sửa</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="hang: ${listHang}">
+                      <td style="display: none;" th:text="${hang.idHang}" class="idHang">Tiger Nixon</td>
+                      <td>
+                        <a href="#" ><img th:src="${hang.image}" class="anhHang" height="35px" th:alt="${hang.name}"></a>
+                      </td>
+                      <td><a href="#" th:text="${hang.name}" class="tenHang"></a></td>
+                      <td th:text="${#lists.size(hang.listSanPham)}">999</td>
+                      <td>999</td>
+                      <td>
+                        <form   onsubmit="return confirm(`Bạn có muốn xóa hãng này không?`)" method="post"
+                        th:action="@{'/admin/quan-ly-hang/xoa/' + ${hang.idHang}}" class="d-flex">
+                        <button type="button" class="btn btn-sm btn-info hangEdit" title="Sửa"><i class="far fa-edit"></i></button>
+                        <button th:if="${#lists.isEmpty(hang.listSanPham)}" title="Xoá" type="submit" class="btn btn-sm btn-danger">
+                          <i class="far fa-trash-alt"></i>
+                          </button>
+                          </form>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">Biểu đồ tỉ lệ sản phẩm</h6>
+            </div>
+            <div class="card-body">
+            	<canvas id="cvsPercent"></canvas>
+            </div>
+            </div>
+          
+        </div>
+          
+        </div>
+      </div>
+    </div>
+      <form th:action="@{quan-ly-hang/chinh-sua}" method="post">
+        <input type="hidden" name="idHang" id="idHang">
+        <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" style="padding: 40px;">
+                <div class="form-group">
+                  <input type="text" class="form-control" name="name" id="tenHang" placeholder="Tên hãng">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" name="image" id="linkAnh" placeholder="Link ảnh">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Lưu</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+  <th:block th:replace="layout/footer :: footer"></th:block>
+  <th:block th:replace="layout/comon :: js"></th:block>
+  <script type="text/javascript" src="../static/vendor/chart.js/Chart.js" data-th-src="@{/vendor/chart.js/Chart.js}"></script>
+  <script type="text/javascript" src="../static/js/quanLyHang.js" data-th-src="@{/js/quanLyHang.js}"></script>
+</body>
+</html>

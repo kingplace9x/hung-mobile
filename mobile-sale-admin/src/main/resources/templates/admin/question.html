@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Quản lý đơn hàng</title>
+<th:block th:replace="layout/comon :: css"></th:block>
+<style>
+  ul > li.active{
+    background-color: skyblue;
+  }
+    .avt {
+      width: 60px; height: 60px; border: 3px solid #DDD; margin: 5px;
+      display: flex;
+      justify-content: center;
+      font-family: sans-serif;
+      align-items: center;
+      font-size: 35px;
+      color: white;
+      border-radius: 50%;
+      text-transform: uppercase;
+    }
+    .media-body{
+     margin: 5px;}
+    .avt.avt-qtv{
+      background-color: #e66723;
+    }
+    .avt.avt-kh{
+      background-color: orange;
+    }
+    
+    .media-heading , .user-name{
+      font-weight: bold;
+      font-family: sans-serif;
+      color: #111;
+    }
+    .form-edit{
+      display: none;
+    }
+</style>
+</head>
+<body id="page-top">
+  <div id="wrapper">
+    <th:block th:replace="layout/sidebar :: sidebar"></th:block>
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <th:block th:replace="layout/header :: header"></th:block>
+        <div class="container-fluid">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Trả lời câu hỏi</h1>
+          </div>
+          
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <div class="row">
+                <div class="col-md-4">
+                  <h6 class="m-0 font-weight-bold text-primary">Danh sách các câu hỏi</h6>
+                </div>
+                <div class="col-md-8 d-flex justify-content-center align-self-center">
+                    <a href="/admin/question/noreply" class="btn btn-sm btn-danger m-2">Chưa trả lời</a>
+                    <a href="/admin/question" class="btn btn-sm btn-primary m-2">Tất cả</a>
+                    <a href="/admin/question/replied" class="btn btn-sm btn-success m-2">Đã trả lời</a>
+                </div>
+                </div>
+            </div>
+            <div class="card-body" th:if="${#lists.isEmpty(listHoiDap)}">
+              <h4>Không có câu hỏi nào</h4>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item" th:each="ques : ${listHoiDap}" th:id="|ques${ques.idHoiDap}|">
+                <div class="row">
+                <div class="col-md-3" style="border-right: 1px solid #b4b3f3;">
+                  <div class="row" style="height: 100%">
+                    <div class="col-md-5 d-flex justify-content-center align-items-center" >
+                      <img th:alt="${ques.sanPham.name}" th:src="${'/assets/phone-image/' + ques.sanPham.image}" width="100%">
+                    </div>
+                    <div class="col-md-7 d-flex flex-column justify-content-center">
+                      <p ><a href="#" th:text="${ques.sanPham.name}"></a></p>
+                        <p>
+                          <b>Giá: </b>
+                          <span style="font-weight: bold; font-size: 20px; color: red;" 
+                          th:text="${#numbers.formatDecimal(ques.sanPham.price, 0, 'POINT', 0, 'POINT') + ' VNĐ'}"></span>
+                        </p>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-md-9">
+                <div class="cmt-box">
+                  <div class="media">
+                    <span class="avt avt-kh" th:text="${#strings.substring(ques.khachHang.name,0,1)}">H</span>
+                    <div class="media-body">
+                      <p class="user-name"><span th:text="${ques.khachHang.name}"></span> 
+                      <span class="badge badge-success" th:text="${T(com.admin.mobile.sale.utils.DateUtils).toAgo(ques.createAt)}">1 ngày trước</span></p>
+                      
+                      <p th:text="${ques.noiDung}"></p>
+
+                      <div class="media-reply-box" th:unless="${ques.nhanVien}">
+                        <div class="form-group">
+                            <form action="/admin/rep-question" method="post">
+                              <input type="hidden" name="idQuestion" th:value="${ques.idHoiDap}">
+                              <textarea class="form-control" name="question" minlength="10" maxlength="255"></textarea>
+                              <button type="submit" class="btn btn-danger mt-2"><i class="fas fa-paper-plane"></i> Trả lời</button>
+                            </form>
+                        </div>
+                      </div>
+                     
+                      <div class="media-reply-box" th:if="${ques.nhanVien}">
+                        <div class="media">
+                          <span class="avt avt-qtv" th:text="${#strings.substring(ques.nhanVien.fullName,0,1)}">H</span>
+                          <div class="media-body">
+                          <div class="nv">
+                            <p class="media-heading">
+                            
+                            <span th:text="${ques.nhanVien.fullName}"></span> 
+                              <span class="badge badge-warning" th:if="${'ALL' eq ques.nhanVien.Role.toString() or 'MANAGER' eq ques.nhanVien.Role.toString() }">Quản trị viên</span>
+                              <span class="badge badge-warning" th:unless="${'ALL' eq ques.nhanVien.Role.toString() or 'MANAGER' eq ques.nhanVien.Role.toString() }">Nhân viên</span>
+                            </p>
+                            <p th:text="${ques.reply}">
+                            </p>
+                            </div>
+                            <form action="/admin/rep-question" method="post" class="form-edit">
+                              <input type="hidden" name="idQuestion" th:value="${ques.idHoiDap}">
+                              <textarea class="form-control" name="question" th:text="${ques.reply}" minlength="10" maxlength="255"></textarea>
+                              <button type="submit" class="btn btn-success mt-2 mb-2"><i class="fas fa-paper-plane"></i> Trả lời</button>
+                            </form>
+                            <form action="/admin/del-question" onsubmit="return confirm('Bạn có muốn xóa câu hỏi này không?')" style="display: inline;" method="post">
+                              <input type="hidden" th:value="${ques.idHoiDap}" name="idHoiDap">
+                              <button class="btn btn-sm btn-danger"><i class="far fa-trash-alt"></i> Xóa</button>
+                            </form>
+                          <button class="btn btn-sm btn-outline-secondary btn-edit"><i class="far fa-edit"></i> Edit</button>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+          
+        </div>
+      </div>
+    </div>
+  <th:block th:replace="layout/footer :: footer"></th:block>
+  <th:block th:replace="layout/comon :: js"></th:block>
+  <script type="text/javascript" src="../static/js/quention.js" data-th-src="@{/js/question.js}"></script>
+</body>
+</html>

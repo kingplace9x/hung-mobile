@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thông tin đặt hàng</title>
+<th:block th:replace="layout/comon :: css"></th:block>
+</head>
+<body>
+	<section>
+		<div th:replace="layout/header :: header"></div>
+		<div class="container">
+  					<div class="row">
+  					<div class="col-sm-3">
+  					</div>
+  						<div class="col-sm-6">
+  						
+  						<div class="alert alert-danger" th:if="${errorMessage != null}" th:text="${errorMessage}">
+  						</div>
+  						<form th:object="${userForm}" name="userform" method="POST" action="dat-hang">		
+         						<input type="hidden" th:field="*{providerId}" />  			
+  						 	<div class="form-group">
+							    <label for="fullName">Họ tên:<span style="color:red">*</span></label>
+							    <input type="text" class="form-control" id="fullName" th:classappend="${#fields.hasErrors('name')} ? border-danger : aaa "  name="name" th:field="*{name}">
+							    <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+  								</div>
+							  </div>
+							  <div class="form-group">
+							    <label for="phone">Số điện thoại:<span style="color:red">*</span></label>
+							    <input type="tel" class="form-control" id="phone"  name="phone" th:field="*{phone}" th:classappend="${#fields.hasErrors('phone')} ? border-danger : aaa " >
+							    <div class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">
+  								</div>
+							  </div>
+							  
+							   <div class="form-group">
+							    <label for="email">Email:</label>
+							    <input type="email" class="form-control" id="email" th:field="*{email}">
+							    <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+  								</div>
+							  </div>
+  						
+							  <div class="form-group">
+							    <label for="pwd">Địa chỉ:<i>(Nhập địa chỉ chi tiết, số nhà, tên đường...)</i> <span style="color:red">*</span></label>
+							    <input type="text" class="form-control" id="pwd" name="address" th:field="*{adrress}" th:classappend="${#fields.hasErrors('adrress')} ? border-danger : aaa " >
+							    <div class="text-danger" th:if="${#fields.hasErrors('adrress')}" th:errors="*{adrress}">
+  								</div>
+							  </div>
+							    <div class="d-flex justify-content-between mb-3">
+								    <div class="p-2"><a href="/"><button type="button" class="btn btn-secondary">Quay lại</button></a></div>
+								    <div class="p-2"></div>
+								    <div class="p-2"><button type="submit" class="btn btn-info" onclick="location.href='/xac-nhan-dat-hang'">Xác nhận</button></div>
+							  </div>
+						</form>
+					</div>
+					  <div class="col-sm-3">
+					</div>
+  				</div>
+		</div>
+
+		<div th:replace="layout/footer :: footer"></div>
+		<th:block th:include="layout/comon :: js"></th:block>
+		<script src="js/product_custom.js"></script>
+	</section>
+</body>
+</html>

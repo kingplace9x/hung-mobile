@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xác nhận đặt hàng</title>
+<th:block th:replace="layout/comon :: css"></th:block>
+</head>
+<body>
+	<section>
+		<div th:replace="layout/header :: header"></div>
+		<div class="container">
+  					<div class="row">
+  					<div class="col-sm-3">
+  					</div>
+  						<div class="col-sm-6">
+  						<h3>Thông tin đơn hàng</h3>
+  						<table class="table table-hover">
+  							<thead>
+  								<tr>
+  									<th>#</th>
+  									<th>Tên sản phẩm</th>
+  									<th>Giá</th>
+  									<th>Số lượng</th>
+  								</tr>
+  							</thead>
+  							<tbody>
+  								<tr th:each="sp : ${listCart}">
+  									<th>
+	  									<a th:href="|/product?id=${sp.idSanPham}|">
+	  										<img height="60px" alt="" th:src="|assets/phone-image/${sp.image}|"/>
+	  									</a>
+  									</th>
+  									<th> 
+	  									<a th:href="|/product?id=${sp.idSanPham}|" th:text="${sp.tenSanPham}">
+	  									</a>
+  									</th>
+  									<th th:text="${#numbers.formatDecimal(sp.giaSanPham, 0, 'POINT', 0, 'POINT') + ' VNĐ'}">Giá</th>
+  									<th th:text="${sp.soLuong}">Số lượng</th>
+  								</tr>
+  							</tbody>
+  							<tfoot>
+  								<tr>
+  									<th></th>
+  									<th colspan="3">
+  										<h4>Tổng tiền: <span style="color: red; font-size: 20px; font-weight: bold;"
+  											th:text="${#numbers.formatDecimal(T(com.sale.cellphone.dto.CartDTO).tinhTongTien(listCart), 0, 'POINT', 0, 'POINT') + ' VNĐ'}"
+  										>13213214 VNĐ</span></h4>
+  									</th>
+  								</tr>
+  							</tfoot>
+  						</table>
+  						
+  						<h3>Thông tin khách hàng</h3>
+  						<h4>Họ tên: <b th:text="${userForm.name}"></b></h4>
+  						<h4>Email: <b th:text="${userForm.email}"></b></h4>
+  						<h4>Địa chỉ: <b th:text="${userForm.adrress}"></b></h4>
+  						<h4>Số điện thoại: <b th:text="${userForm.phone}"></b></h4>
+  						
+  						<form th:object="${userForm}" name="userform" method="POST" action="xac-nhan-dat-hang">
+  							<button type="submit" class="btn btn-success">Đặt hàng</button>
+						</form>
+					</div>
+					  <div class="col-sm-3">
+					</div>
+  				</div>
+		</div>
+		
+		<div class="modal fade" th:if="${OK}" id="modelOK" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Đặt hàng thành công</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <h3>Bạn đã đạt hàng thành công!</h3>
+		        <p>Vui lòng tra cứu đơn hàng của bạn <a href="/tra-cuu-don-hang">tại đây</a></p>
+		        
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-primary" onclick="location.href='/'">Quay về trang chủ</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		<div th:replace="layout/footer :: footer"></div>
+		<th:block th:include="layout/comon :: js"></th:block>
+		<script src="js/product_custom.js"></script>
+		<script>
+			$(function(){
+				$('#modelOK').modal().on("hide.bs.modal", function(){
+					location.href='/';
+				})
+			})
+		</script>
+	</section>
+</body>
+</html>

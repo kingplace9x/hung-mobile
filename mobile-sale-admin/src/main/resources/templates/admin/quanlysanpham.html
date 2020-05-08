@@ -107,7 +107,6 @@
                         <div class="text-center">
                           <h5 class="text-danger" th:text="${#numbers.formatDecimal(sp.price, 0, 'POINT', 0, 'POINT') + ' VNĐ'}">
                           </h5>
-                          <div>Số lượng: <strong th:text="${sp.soLuong}"></strong></div>
                           <div><i class="fas fa-map-marker-alt"></i> <strong th:text="${#strings.abbreviate(sp.cuaHang.address,35)}" th:title="${sp.cuaHang.address}"></strong></div>
                           <em style="font-size: 12px">
                           Cập nhật gần đây lúc <th:block th:text="${#dates.format(sp.updatedAt, 'dd/MM/yyyy hh:mm')}"></th:block>
@@ -122,8 +121,8 @@
                           </form>
                         
                         </div>
-                      <div class="viewRate badge badge-warning" title="Lượt xem" style="position: absolute; top:5px; right: 5px; color: black;"><span th:text="${sp.view}"> </span><i class="fas fa-eye"></i></div>
-                      
+                      <div class="viewRate badge badge-warning" title="Lượt xem" style="position: absolute; top:5px; right: 5px; color: black;"><span th:text="${sp.view}"></span> <i class="fas fa-eye"></i></div>
+                      <div class="countRate badge badge-warning" title="Số lượng" style="position: absolute; top:28px; right: 5px; color: black;"><span th:text="${sp.soLuong}"></span> <i class="fas fa-mobile-alt"></i></div>
                       </div>
                       
                       

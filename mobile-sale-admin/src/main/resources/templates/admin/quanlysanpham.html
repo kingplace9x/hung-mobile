@@ -19,6 +19,24 @@
 	a.star:hover{
 		text-decoration: none;
 	}
+    .grid-item{
+      transition:.2s;
+      padding: 1rem 0;
+    }
+     .grid-item:hover{
+      transform:scale(1.1)
+    }
+    .grid-item:hover #formEdit{
+      opacity: .9;
+    }
+    #formEdit{
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      transition:.2s;
+      opacity: 0;
+    }
+
 </style>
 </head>
 <body id="page-top">
@@ -51,13 +69,70 @@
                     </div>
                     <button class="btn btn-sm btn-primary m-1" type="submit">Tìm kiếm</button>
                     <button class="btn btn-sm btn-danger m-1" type="reset" onclick="searchDTO={}">Reset</button>
+                      <a class="btn btn-light" id="switchList" href="quan-ly-san-pham?grid">
+                        <i class="fas fa-border-all"></i>
+                      </a>
                   </form>
                 </div>
               </div>
             </div>
             <div class="card-body" id="dataSP">
               <div class="table-responsive" th:fragment="search-fragment">
-                <table class="table table-bordered table-hover" id="dataTable">
+              <div th:if="${param.grid}">
+                <!--Grid View -->
+                <div class="row row-eq-height" th:each="sp,rowStatus: ${page}" th:if="${rowStatus.index % 5} == 0">
+                  <div class="col p-4" th:each="sp,spStatus: ${page}"
+                    th:if="${spStatus.index lt rowStatus.index + 5 and spStatus.index ge rowStatus.index}">
+                      <div class="shadow-sm rounded grid-item" style="height: 100%; position: relative;">
+                        <div class="text-center">
+                          <img th:src="@{'/assets/phone-image/' + ${sp.image}}"  th:alt="${sp.name}">
+                        </div>
+                        <div class="p-2 text-center" style="height: 4rem">
+                          <span class="text-primary" th:text="${#strings.abbreviate(sp.name,30)}" th:title="${sp.name}"></span>
+                          <span>
+                          <a th:href="@{/admin/question(idSP=${sp.idSanPham})}" th:if="${!#lists.isEmpty(sp.listHoiDap)}" th:title="|Có ${#lists.size(sp.listHoiDap)} bình luận|"
+                       style="font-size: 16px;font-style: italic; color: orange;">
+                          <i class="fas fa-comment"></i>(<span th:text="${#lists.size(sp.listHoiDap)}"></span>)</a>
+                          </span><br>
+                          
+                          <a th:if="${!#lists.isEmpty(sp.listDanhGia)}" th:href="|javascript:danhGia(${sp.idSanPham})|" class="star" th:title="|Có ${#lists.size(sp.listDanhGia)} đánh giá|" th:id-sp="${sp.idSanPham}">
+                        <i class="fas fa-star"
+                          th:each="item : ${#numbers.sequence(1,5)}"
+                         th:style="${T(com.admin.mobile.sale.utils.DanhGiaUtils).average(sp.listDanhGia) >= item ? 'color:#e06e0c' : 'color:gray'}"></i>
+                        <span th:text="${T(com.admin.mobile.sale.utils.DanhGiaUtils).average(sp.listDanhGia)}"></span>
+                        <sup style="font-style: italic; color: navy;" th:text="|(${#lists.size(sp.listDanhGia)})|"></sup>
+                        </a>
+                        <a th:unless="${!#lists.isEmpty(sp.listDanhGia)}" style="font-style: italic; font-size: 10px">Chưa có đánh giá</a> 
+                        </div>
+                        <div class="text-center">
+                          <h5 class="text-danger" th:text="${#numbers.formatDecimal(sp.price, 0, 'POINT', 0, 'POINT') + ' VNĐ'}">
+                          </h5>
+                          <div>Số lượng: <strong th:text="${sp.soLuong}"></strong></div>
+                          <div><i class="fas fa-map-marker-alt"></i> <strong th:text="${#strings.abbreviate(sp.cuaHang.address,35)}" th:title="${sp.cuaHang.address}"></strong></div>
+                          <em style="font-size: 12px">
+                          Cập nhật gần đây lúc <th:block th:text="${#dates.format(sp.updatedAt, 'dd/MM/yyyy hh:mm')}"></th:block>
+                          Bởi <th:block th:text="${sp.updateBy.fullName}"></th:block>
+                        </em>
+                          <form onsubmit="return confirm(`Bạn có muốn xóa sản phẩm này không?`)" method="post"
+                        th:action="@{'/admin/quan-ly-san-pham/xoa/' + ${sp.idSanPham}}" id="formEdit">
+                        <button type="button" class="btn btn-sm btn-info btn-edit hangEdit" title="Sửa" th:onclick="|location.href='/admin/quan-ly-san-pham/edit/${sp.idSanPham}'|"><i class="far fa-edit"></i> </button>
+                        <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                          <i class="far fa-trash-alt"></i> 
+                          </button>
+                          </form>
+                        
+                        </div>
+                      <div class="viewRate badge badge-warning" title="Lượt xem" style="position: absolute; top:5px; right: 5px; color: black;"><span th:text="${sp.view}"> </span><i class="fas fa-eye"></i></div>
+                      
+                      </div>
+                      
+                      
+                  </div>
+                </div>
+              </div> <!--End of grid View -->
+              
+              <!--List View -->
+                <table class="table table-bordered table-hover" id="dataTable" th:unless="${param.grid}">
                   <thead>
                     <tr>
                       <th style="display: none">Mã SP</th>

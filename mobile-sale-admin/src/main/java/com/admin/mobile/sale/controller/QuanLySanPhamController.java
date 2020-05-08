@@ -13,8 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.context.request.WebRequest;
 import com.admin.mobile.sale.dto.SearchDTO;
 import com.admin.mobile.sale.entities.SanPham;
 import com.admin.mobile.sale.form.FormSP;
@@ -40,14 +39,12 @@ public class QuanLySanPhamController {
 	private SanPhamService sanPhamService;
 	
 	@GetMapping("/admin/quan-ly-san-pham")
-	public String quanLySP(Model model, @RequestParam(required = false) Integer idHang, Pageable pageable) {
-		System.out.println("idHang=" + idHang);
-		if(idHang==null) {
-			model.addAttribute("page", sanPhamRepository.findAll(PageRequest.of(pageable.getPageNumber(),10)));
-			
-		}
-		else {
-			model.addAttribute("page", sanPhamRepository.findAllByIdHang(idHang,PageRequest.of(pageable.getPageNumber(),10)));
+	public String quanLySP(Model model, String grid, Pageable pageable) {
+		if(grid!=null) {
+			System.out.println("grid=" +grid);
+			model.addAttribute("page", sanPhamRepository.findAll(PageRequest.of(pageable.getPageNumber(),15)));	
+		} else {
+			model.addAttribute("page", sanPhamRepository.findAll(PageRequest.of(pageable.getPageNumber(),10)));			
 		}
 		model.addAttribute("listHang", hangRepository.findAll());
 		return "admin/quanlysanpham";
@@ -99,9 +96,18 @@ public class QuanLySanPhamController {
 	}
 	
 	@PostMapping("/admin/quan-ly-san-pham/search")
-	public String timkiemsp(Model model, SearchDTO searchDTO, Pageable pageable) {
-		Page<SanPham> page = searchRepository.findBySeachDTO(searchDTO, pageable);
+	public String timkiemsp(Model model, WebRequest req, SearchDTO searchDTO, Pageable pageable) {
+		String grid = req.getParameter("grid");
+		Page<SanPham> page = null;
+		if("ok".equals(grid)) {
+			page = searchRepository.findBySeachDTO(searchDTO, PageRequest.of(pageable.getPageNumber(), 15));
+			System.out.println("okkkkkkkkkkkk");
+		} else {
+			page = searchRepository.findBySeachDTO(searchDTO, PageRequest.of(pageable.getPageNumber(), 10));
+			
+		}
 		model.addAttribute("page", page);
+
 		return "admin/quanlysanpham :: search-fragment";
 	}
 }

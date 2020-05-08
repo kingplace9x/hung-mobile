@@ -1,6 +1,15 @@
 searchDTO = {};
 
 $(function(){
+	
+	if(location.search.indexOf('grid')!=-1){
+		searchDTO.grid = 'ok';
+		$("#switchList").attr("href",'quan-ly-san-pham').html(`<i class="fas fa-list-ul"></i>`);
+	} else {
+		delete searchDTO.grid;
+		$("#switchList").attr("href",'quan-ly-san-pham?grid').html(`<i class="fas fa-border-all"></i>`);
+	}
+	
 	$("#formSearch").on("submit",function(event){
 		event.preventDefault();
 		search(searchDTO = deSerialize($(this).serialize()),0)

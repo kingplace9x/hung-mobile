@@ -5,7 +5,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -72,10 +71,10 @@ public class SearchRepository {
 			countQuery.setParameter("name", "%" + dto.getName() +"%");
 		}
 		
-		findQuery.setMaxResults(10);
-		findQuery.setFirstResult(10*pageable.getPageNumber());
+		findQuery.setMaxResults(pageable.getPageSize());
+		findQuery.setFirstResult(pageable.getPageSize()*pageable.getPageNumber());
 		
-		return new PageImpl<SanPham>(findQuery.getResultList(),PageRequest.of(pageable.getPageNumber(), 10),countQuery.getSingleResult());
+		return new PageImpl<SanPham>(findQuery.getResultList(),pageable,countQuery.getSingleResult());
 	}
 	
 }

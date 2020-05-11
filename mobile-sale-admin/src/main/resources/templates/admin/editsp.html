@@ -31,94 +31,143 @@
               </div>
             </div>
             <div class="card-body" id="dataSP">
+            
             <div class="row">
-             <div th:unless="${isNew}">
-                    <img th:alt="*{name}"  th:src="|/assets/phone-image/*{imageUrl}|">
-                    <span><a href="#" th:text="*{name}"></a></span>
-                  </div>
-                  </div>
-                   <div class="form-group col-6">
-                      <label th:for="name">Ảnh</label>
-                      <input type="file" class="form-control" th:field="*{image}">
-                      <span style="color: red; font-style: italic;" 
-                        th:if="${#fields.hasErrors('image')}" th:errors="*{image}" ></span>
-                   </div>
+            <div class="col-md-3">
               <div class="row">
-                <div class="col-md-6">
-                	<h3>Thông tin chung</h3>
-                
-                 
-                  <div class="form-group">
+                <div th:unless="${isNew}">
+                  <img th:alt="*{name}" id="phoneImg" style="max-height: 175px; max-width: 220px" th:src="|/assets/phone-image/*{imageUrl}|">
+                  <span><a href="#" th:text="*{name}"></a></span>
+                </div>
+              </div>
+               <div class="form-group col-6">
+                  <label th:for="name">Ảnh</label>
+                  <input type="file" class="d-none form-control"  accept="image/*" onchange="encodeImageFileAsURL(this)" th:field="*{image}">
+                  <button class="btn btn-danger" type="button" onclick="$('input[type=file]').click()"><i class="fas fa-fw fa-edit"></i></button>
+                  <span style="color: red; font-style: italic;" 
+                    th:if="${#fields.hasErrors('image')}" th:errors="*{image}" ></span>
+               </div>
+             </div>
+             
+              <div class="row col-md-9" >
+                <div class="col-md-4 form-row" style="height: fit-content;">
+                  <div class="form-group col-md-12">
                       <label th:for="name">Tên sản phẩm</label>
                       <input type="text" class="form-control" th:field="*{name}">
                       <span style="color: red; font-style: italic;" 
                       th:if="${#fields.hasErrors('name')}"
                       th:errors="${sp.name}"></span>
                    </div>
-                   <div class="form-group">
-                      <label th:for="idHang">Hãng</label>
-                      <select th:field="*{idHang}" class="form-control">
-                        <option th:each="hang : ${listHang}" th:text="${hang.name}" th:value="${hang.idHang}"></option>
-                      </select>
-                      
-                   </div>
-                   <div class="form-group">
+                   <div class="form-group col-md-8">
                       <label th:for="price">Giá sản phẩm</label>
-                      <input type="number" class="form-control" step="10000" th:field="*{price}">
+                      
+                      <div class="input-group">
+                        <input type="number" class="form-control" step="10000" th:field="*{price}">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">VNĐ</span>
+                        </div>
+                      </div>
                       <span style="color: red; font-style: italic;" 
                         th:if="${#fields.hasErrors('price')}"
                         th:errors="${sp.price}"></span>
                    </div>
-                   <div class="form-group">
-                      <label th:for="descripsion">Mô tả</label>
-                      <textarea class="form-control" th:field="*{descripsion}" rows="18">
-                      </textarea>
-                      <span style="color: red; font-style: italic;" 
-                        th:if="${#fields.hasErrors('descripsion')}"
-                        th:errors="${sp.descripsion}"></span>
+                   <div class="form-group col-md-4">
+                      <label th:for="idHang">Hãng</label>
+                      <select th:field="*{idHang}" class="form-control">
+                        <option th:each="hang : ${listHang}" th:text="${hang.name}" th:value="${hang.idHang}"></option>
+                      </select>
                    </div>
                 </div>
-                <div class="col-md-6">
-                	<h4>Thông tin chi tiêt</h4>
-                	<div class="form-group">
+                <div class="col-md-8 form-row" style="height: fit-content;">
+                	<div class="form-group col-md-3">
                       <label>Số lượng</label>
-                      <input type="number" class="form-control">
+                      <div class="input-group">
+                      <input type="number" th:field="*{soLuong}" class="form-control" min="0">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Sản phẩm</span>
+                        </div>
+                      </div>
                    </div>
-                   <div class="form-group">
+                   <div class="form-group col-md-5">
                       <label>Dung lượng pin</label>
-                      <input type="number" class="form-control">
+                      <div class="input-group">
+                        <input th:field="*{pin}" type="number" class="form-control" min="0">  
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">mAh</span>
+                        </div>
+                      </div>
                    </div>
-                   <div class="form-group">
+                   <div class="form-group col-md-4">
                       <label>Thông tin sim</label>
-                      <input type="text" class="form-control">
+                      <select th:field="*{sim}" class="form-control">
+                        <option value="1 Sim">1 Sim</option>
+                        <option value="2 Sim, 1 thẻ nhớ">2 Sim, 1 thẻ nhớ</option>
+                        <option value="1 Sim, 1 thẻ nhớ">1 Sim, 1 thẻ nhớ</option>
+                      </select>
                    </div>
-                   <div class="form-group">
+                   <div class="form-group col-md-5">
                       <label>Kích thước màn hình</label>
-                      <input type="number" class="form-control">
+                      <div class="input-group">
+                        <input th:field="*{kichThuocManHinh}" type="number" step=".1"  class="form-control" min="0">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Inch</span>
+                        </div>
+                      </div>
                    </div>
-                   <div class="form-group">
+                   <div class="form-group col-md-3">
                       <label>Công nghệ màn hình</label>
-                      <input type="text" class="form-control">
+                      <input type="text" th:field="*{congNgheManHinh}" class="form-control">
                    </div>
-                   <div class="form-group">
+                   <div class="form-group col-md-4">
                       <label>Độ phân giải màn hình</label>
-                      <input type="text" class="form-control">
+                      <div class="input-group">
+                        <input type="text" class="form-control" th:field="*{doPhanGiaiManHinh}">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Pixel</span>
+                        </div>
+                      </div>
                    </div>
-                   <div class="form-group">
+
+                   <div class="form-group col-md-4">
                       <label>Bộ nhớ trong</label>
-                      <input type="text" class="form-control">
+                      <div class="input-group">
+                        <input th:field="*{boNhoTrong}" type="text" class="form-control" min="0">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">GB</span>
+                        </div>
+                      </div>
                    </div>
-                   <div class="form-group">
+                   <div class="form-group col-md-3">
+                      <label>RAM</label>
+                      <div class="input-group">
+                        <select class="form-control">
+                          <option>1GB</option>
+                          <option>2GB</option>
+                          <option selected="selected">4GB</option>
+                          <option>6GB</option>
+                          <option>8GB</option>
+                        </select>
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">GB</span>
+                        </div>
+                      </div>
+                   </div>
+                   <div class="form-group col-md-5">
                       <label>CPU</label>
-                      <input type="text" class="form-control">
-                   </div>
-                   <div class="form-group">
-                      <label>Camera</label>
-                      <input type="number" class="form-control">
+                      <input type="text" th:field="*{CPU}" class="form-control">
                    </div>
                 </div>
               </div>
+             </div>
+             <label th:for="descripsion">Mô tả</label>
+             <div class="form-group col-md-12 editor" th:utext="*{descripsion}">
+
+              </div>
             </div>
+            <input type="hidden" th:field="*{descripsion}">
+            <span style="color: red; font-style: italic;" 
+              th:if="${#fields.hasErrors('descripsion')}"
+              th:errors="${sp.descripsion}"></span>
             <div class="card-footer d-flex" style="justify-content: space-evenly;">
                 <button class="btn btn-danger" type="button" style="width: 175px" onclick="location.href='/admin/quan-ly-san-pham'">Quay lại</button>
                 <button class="btn btn-success" type="submit" style="width: 175px">Lưu</button>
@@ -132,6 +181,27 @@
     </div>
   <th:block th:replace="layout/footer :: footer"></th:block>
   <th:block th:replace="layout/comon :: js"></th:block>
+  <script src="https://cdn.ckeditor.com/ckeditor5/19.0.0/classic/ckeditor.js"></script>
   <script type="text/javascript" src="../static/js/quanLySanPham.js" data-th-src="@{/js/quanLySanPham.js}"></script>
+  <script>
+  var editor;
+  function encodeImageFileAsURL(element) {
+	  var file = element.files[0];
+	  var reader = new FileReader();
+	  reader.onloadend = function() {
+	    $("#phoneImg").attr("src",reader.result);
+	  }
+	  reader.readAsDataURL(file);
+	}
+  $(function(){
+	  ClassicEditor.create($('.editor')[0]).then(e=>{
+		  editor = e;
+		  editor.model.document.on( 'change:data', () => {
+			    $("#descripsion").val(editor.getData())
+			});
+	  });
+	  
+  })
+  </script>
 </body>
 </html>

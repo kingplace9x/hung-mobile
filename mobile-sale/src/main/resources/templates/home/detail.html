@@ -100,9 +100,12 @@
                           </div>
                           </th:block>
                           <div>
-                            Lượt xem: <span th:text="${product.view}">1234</span> <i class="fas fa-eye"></i>
+                            Lượt xem: <span style="font-weight: bold;" th:text="${product.view}">1234</span> <i class="fas fa-eye"></i>
                           </div>
-						<div class="product_text"><p th:text="${product.descripsion}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fermentum. laoreet turpis, nec sollicitudin dolor cursus at. Maecenas aliquet, dolor a faucibus efficitur, nisi tellus cursus urna, eget dictum lacus turpis.</p></div>
+                          <div>
+                            Còn: <span style="font-weight: bold;" th:text="${product.soLuong}"></span> sản phẩm trong kho
+                          </div>
+						<div class="product_text"><p th:utext="${product.descripsion}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fermentum. laoreet turpis, nec sollicitudin dolor cursus at. Maecenas aliquet, dolor a faucibus efficitur, nisi tellus cursus urna, eget dictum lacus turpis.</p></div>
 						<div class="order_info d-flex flex-row">
 							<form action="#">
 								<div class="clearfix" style="z-index: 1000;">
@@ -154,7 +157,7 @@
         <div class="col-md-4">
           <form method="post" id="questionForm">
             <input type="hidden" th:value="${param.id}" name="idSanPham">
-            <textarea class="form-control" required="required" minlength="5" maxlength="55" name="question" ></textarea>
+            <textarea class="form-control" required="required" maxlength="55" name="question" ></textarea>
             <button type="button" th:unless="${session.userForm}" onclick="$('#userDataModel').modal()" class="btn btn-sm btn-danger">Nhập thông tin để bình luận</button>
             <button type="submit" th:if="${session.userForm}" class="btn btn-sm btn-primary"><i class="fas fa-paper-plane"></i>Gửi</button>          
           </form>

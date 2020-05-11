@@ -38,6 +38,8 @@ public class SanPhamService {
 					.price(sp.getPrice())
 					.sim(sp.getSim())
 					.imageUrl(sp.getImage())
+					.soLuong(sp.getSoLuong())
+					.boNhoTrong(sp.getBoNhoTrong())
 					.build();
 		}
 		return null;

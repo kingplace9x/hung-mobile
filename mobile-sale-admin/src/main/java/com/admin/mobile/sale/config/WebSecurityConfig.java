@@ -24,6 +24,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+    
+    @Autowired
+	private MyAuthenticationSuccessHandler successHandler;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -41,7 +44,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 .loginProcessingUrl("/login")
                 .loginPage("/login")
-                .usernameParameter("username").passwordParameter("password")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .successHandler(successHandler)
                 .defaultSuccessUrl("/admin", true)
                 .and()
                 .logout()

@@ -24,7 +24,7 @@
       padding: 1rem 0;
     }
      .grid-item:hover{
-      transform:scale(1.1)
+      transform:scale(1.01)
     }
     .grid-item:hover #formEdit{
       opacity: .9;
@@ -36,7 +36,14 @@
       transition:.2s;
       opacity: 0;
     }
-
+    .phone-image{
+    	max-width: 175px;
+    }
+	
+	tr>th{
+		padding: 10px !important;
+		font-size: 14px !important;
+	}
 </style>
 </head>
 <body id="page-top">
@@ -81,14 +88,14 @@
               <div th:if="${param.grid}">
                 <!--Grid View -->
                 <div class="row row-eq-height" th:each="sp,rowStatus: ${page}" th:if="${rowStatus.index % 5} == 0">
-                  <div class="col p-4" th:each="sp,spStatus: ${page}"
+                  <div class="col p-2" th:each="sp,spStatus: ${page}"
                     th:if="${spStatus.index lt rowStatus.index + 5 and spStatus.index ge rowStatus.index}">
                       <div class="shadow-sm rounded grid-item" style="height: 100%; position: relative;">
                         <div class="text-center">
-                          <img th:src="@{'/assets/phone-image/' + ${sp.image}}"  th:alt="${sp.name}">
+                          <img th:src="@{'/assets/phone-image/' + ${sp.image}}"  th:alt="${sp.name}" class="phone-image">
                         </div>
-                        <div class="p-2 text-center" style="height: 4rem">
-                          <span class="text-primary" th:text="${#strings.abbreviate(sp.name,30)}" th:title="${sp.name}"></span>
+                        <div class="p-1 text-center" style="height: 4rem">
+                          <span class="text-primary" style="font-size:12px;" th:text="${#strings.abbreviate(sp.name,22)}" th:title="${sp.name}"></span>
                           <span>
                           <a th:href="@{/admin/question(idSP=${sp.idSanPham})}" th:if="${!#lists.isEmpty(sp.listHoiDap)}" th:title="|Có ${#lists.size(sp.listHoiDap)} bình luận|"
                        style="font-size: 16px;font-style: italic; color: orange;">
@@ -105,9 +112,9 @@
                         <a th:unless="${!#lists.isEmpty(sp.listDanhGia)}" style="font-style: italic; font-size: 10px">Chưa có đánh giá</a> 
                         </div>
                         <div class="text-center">
-                          <h5 class="text-danger" th:text="${#numbers.formatDecimal(sp.price, 0, 'POINT', 0, 'POINT') + ' VNĐ'}">
-                          </h5>
-                          <div><i class="fas fa-map-marker-alt"></i> <strong th:text="${#strings.abbreviate(sp.cuaHang.address,35)}" th:title="${sp.cuaHang.address}"></strong></div>
+                          <h6 class="text-danger" th:text="${#numbers.formatDecimal(sp.price, 0, 'POINT', 0, 'POINT') + ' VNĐ'}">
+                          </h6>
+                          <div style="font-size:12px;"><i class="fas fa-map-marker-alt"></i> <strong th:text="${#strings.abbreviate(sp.cuaHang.address,27)}" th:title="${sp.cuaHang.address}"></strong></div>
                           <em style="font-size: 12px">
                           Cập nhật gần đây lúc <th:block th:text="${#dates.format(sp.updatedAt, 'dd/MM/yyyy hh:mm')}"></th:block>
                           Bởi <th:block th:text="${sp.updateBy.fullName}"></th:block>
@@ -137,10 +144,10 @@
                       <th style="display: none">Mã SP</th>
                       <th>Ảnh</th>
                       <th>Tên sản phẩm</th>
-                      <th>Giá tiền</th>
+                      <th>Giá tiền </th>
                       <th>Số lượng</th>
                       <th>Cập nhật lần cuối</th>
-                      <th>Views</th>
+                      <th><i class="fas fa-eye"></i></th>
                       <th>Hiện có tại</th>
                       <th>Chỉnh sửa</th>
                     </tr>
@@ -166,13 +173,13 @@
                       	</a>
                       	<a th:unless="${!#lists.isEmpty(sp.listDanhGia)}" style="font-style: italic; font-size: 10px">Chưa có đánh giá</a>
                       </td>
-                      <td align="right" th:text="${#numbers.formatDecimal(sp.price, 0, 'POINT', 0, 'POINT') + ' VNĐ'}"></td>
+                      <td align="right" th:text="${#numbers.formatDecimal(sp.price, 0, 'POINT', 0, 'POINT')}"></td>
                       <td th:text="${sp.soLuong}">999</td>
                       <td> 
                       	Lúc <th:block th:text="${sp.updatedAt}"></th:block><br>
                       	Bởi nhân viên <th:block th:text="${sp.updateBy.fullName}"></th:block>
                       </td>
-                      <td><i class="fas fa-eye"></i><span th:text="${sp.view}"></span></td>
+                      <td><span th:text="${sp.view}"></span></td>
                       <td th:text="${#strings.abbreviate(sp.cuaHang.address,26)}" th:title="${sp.cuaHang.address}"></td>
                       <td>
                         <form onsubmit="return confirm(`Bạn có muốn xóa sản phẩm này không?`)" method="post"

@@ -65,7 +65,7 @@ function topView(){
 				    scales: {
 				        yAxes: [{
 				        	maxBarThickness: 80,
-				        	barThickness: 50,
+				        	barThickness: 25,
 				        	barPercentage: 5.5,
 				            categoryPercentage: 5.5,
 				        }],

@@ -36,7 +36,7 @@
             <div class="col-md-3">
               <div class="row">
                 <div th:unless="${isNew}">
-                  <img th:alt="*{name}" id="phoneImg" style="max-height: 175px; max-width: 220px" th:src="|/assets/phone-image/*{imageUrl}|">
+                  <img th:alt="*{name}" id="phoneImg" style="max-height: 175px; max-width: 220px" th:src="|/assets/phone-image/*{imageUrl}|"><br>
                   <span><a href="#" th:text="*{name}"></a></span>
                 </div>
               </div>

@@ -1,14 +1,20 @@
 package com.admin.mobile.sale.service;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.admin.mobile.sale.bean.LoginUserDetails;
+import com.admin.mobile.sale.entities.NhanVien;
 import com.admin.mobile.sale.entities.SanPham;
+import com.admin.mobile.sale.enums.CuaHang;
 import com.admin.mobile.sale.enums.SanPhamType;
 import com.admin.mobile.sale.form.FormSP;
+import com.admin.mobile.sale.repository.NhanVienRepository;
 import com.admin.mobile.sale.repository.SanPhamRepository;
 
 @Service
@@ -19,6 +25,9 @@ public class SanPhamService {
 	
 	@Autowired
 	private ImageService imageService;
+	
+	@Autowired
+	private NhanVienRepository nhanVienRepository;
 	
 	public FormSP initForm(Integer idSp) {
 		SanPham sp = sanPhamRepository.findById(idSp).orElse(null);
@@ -63,6 +72,12 @@ public class SanPhamService {
 			}
 		}
 		
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		sp.setUpdatedAt(new Date());
+		NhanVien nv = nhanVienRepository.findByUsername(username);
+		sp.setUpdateBy(nv);
+		sp.setView(0);
+		sp.setCuaHang(CuaHang.ALL);
 		sanPhamRepository.save(sp);
 	}
 }

@@ -112,7 +112,7 @@
                         <a th:unless="${!#lists.isEmpty(sp.listDanhGia)}" style="font-style: italic; font-size: 10px">Chưa có đánh giá</a> 
                         </div>
                         <div class="text-center">
-                          <h6 class="text-danger" th:text="${#numbers.formatDecimal(sp.price, 0, 'POINT', 0, 'POINT') + ' VNĐ'}">
+                          <h6 class="text-danger priceView" th:data-id-sp="${sp.idSanPham}" th:text="${#numbers.formatDecimal(sp.price, 0, 'POINT', 0, 'POINT') + ' VNĐ'}">
                           </h6>
                           <div style="font-size:12px;"><i class="fas fa-map-marker-alt"></i> <strong th:text="${#strings.abbreviate(sp.cuaHang.address,27)}" th:title="${sp.cuaHang.address}"></strong></div>
                           <em style="font-size: 12px">
@@ -128,7 +128,7 @@
                           </form>
                         
                         </div>
-                      <div class="viewRate badge badge-warning" title="Lượt xem" style="position: absolute; top:5px; right: 5px; color: black;"><span th:text="${sp.view}"></span> <i class="fas fa-eye"></i></div>
+                      <div class="viewRate badge badge-warning" th:title="|Lượt xem ${sp.view}|" th:data-id-sp="${sp.idSanPham}" style="position: absolute; top:5px; right: 5px; color: black;"><span th:text="${sp.view}"></span> <i class="fas fa-eye"></i></div>
                       <div class="countRate badge badge-warning" title="Số lượng" style="position: absolute; top:28px; right: 5px; color: black;"><span th:text="${sp.soLuong}"></span> <i class="fas fa-mobile-alt"></i></div>
                       </div>
                       
@@ -274,5 +274,6 @@
   <th:block th:replace="layout/comon :: js"></th:block>
     <script type="text/javascript" src="../static/vendor/chart.js/Chart.js" data-th-src="@{/vendor/chart.js/Chart.js}"></script>
   <script type="text/javascript" src="../static/js/quanLySanPham.js" data-th-src="@{/js/quanLySanPham.js}"></script>
+  <script type="text/javascript" src="../static/js/tooltipsp.js" data-th-src="@{/js/tooltipsp.js}"></script>
 </body>
 </html>

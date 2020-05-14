@@ -41,6 +41,7 @@ function danhGia(idSP){
 function search(searchDTO, page){
 	$.post("/admin/quan-ly-san-pham/search",{page,...searchDTO}).done(function(data){
 		$("#dataSP").html(data);
+		initChart();
 	})
 }
 function deSerialize(search){ if(search===""){ return{}} else return JSON.parse('{"' + search.replace(/\?/g,'').replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })}

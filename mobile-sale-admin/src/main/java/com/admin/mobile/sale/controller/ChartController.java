@@ -45,4 +45,16 @@ public class ChartController {
 	public List<ViewDTO> topView(){
 		return chartService.topView();
 	}
+	
+	@GetMapping("/viewRate")
+	public List<ViewDTO> getView(Integer id) throws InterruptedException{
+		Thread.sleep(200);
+		return chartService.getView(id);
+	}
+	
+	@GetMapping("/priceChange")
+	public List<ViewDTO> priceChange(Integer id) throws InterruptedException{
+		Thread.sleep(200);
+		return chartService.getPriceChange(id);
+	}
 }

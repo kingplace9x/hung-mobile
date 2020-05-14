@@ -21,6 +21,6 @@ jobs:
       with:
         java-version: 1.8
     - name: Grant execute permission for gradlew
-      run: chmod +x mobile-sale-admin/gradlew && chmod +x mobile-sale/gradlew
+      run: chmod +x mobile-sale-admin/gradlew
     - name: Build with Gradle
-      run: ./mobile-sale-admin/gradlew build && ./mobile-sale/gradlew build
+      run: ./mobile-sale-admin/gradlew build

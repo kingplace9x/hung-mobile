@@ -13,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.context.request.WebRequest;
 import com.admin.mobile.sale.dto.SearchDTO;
 import com.admin.mobile.sale.entities.SanPham;
 import com.admin.mobile.sale.form.FormSP;
@@ -40,8 +39,8 @@ public class QuanLySanPhamController {
 	
 	@GetMapping("/admin/quan-ly-san-pham")
 	public String quanLySP(Model model, String grid, Pageable pageable) {
+		
 		if(grid!=null) {
-			System.out.println("grid=" +grid);
 			model.addAttribute("page", sanPhamRepository.findAll(PageRequest.of(pageable.getPageNumber(),15)));	
 		} else {
 			model.addAttribute("page", sanPhamRepository.findAll(PageRequest.of(pageable.getPageNumber(),10)));			
@@ -96,12 +95,10 @@ public class QuanLySanPhamController {
 	}
 	
 	@PostMapping("/admin/quan-ly-san-pham/search")
-	public String timkiemsp(Model model, WebRequest req, SearchDTO searchDTO, Pageable pageable) {
-		String grid = req.getParameter("grid");
+	public String timkiemsp(Model model, String grid, SearchDTO searchDTO, Pageable pageable) {
 		Page<SanPham> page = null;
-		if("ok".equals(grid)) {
+		if(grid != null) {
 			page = searchRepository.findBySeachDTO(searchDTO, PageRequest.of(pageable.getPageNumber(), 15));
-			System.out.println("okkkkkkkkkkkk");
 		} else {
 			page = searchRepository.findBySeachDTO(searchDTO, PageRequest.of(pageable.getPageNumber(), 10));
 			

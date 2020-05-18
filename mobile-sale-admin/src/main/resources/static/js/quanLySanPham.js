@@ -15,6 +15,10 @@ $(function(){
 		search(searchDTO = deSerialize($(this).serialize()),0)
 	}).on("change",function(){
 		search(searchDTO = deSerialize($(this).serialize()),0)
+	});
+	$("#tensp").keyup(function(){
+		searchDTO = deSerialize($(this).serialize());
+		search(searchDTO,0)
 	})
 	$(document).on('click', '.pagination .previous', function(){
 		if(!$(this).hasClass("disabled")){
@@ -39,6 +43,11 @@ function danhGia(idSP){
 }
 
 function search(searchDTO, page){
+	if(location.search.indexOf('grid')!=-1){
+		searchDTO.grid = 'ok';
+	} else{
+		delete searchDTO.grid;
+	}
 	$.post("/admin/quan-ly-san-pham/search",{page,...searchDTO}).done(function(data){
 		$("#dataSP").html(data);
 		initChart();

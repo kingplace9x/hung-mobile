@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.admin.mobile.sale.service.UserDetailsServiceImpl;
@@ -24,9 +25,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
-    
-    @Autowired
-	private MyAuthenticationSuccessHandler successHandler;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -46,8 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .successHandler(successHandler)
-                .defaultSuccessUrl("/admin", true)
+                .successHandler(successHandler())
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout**", "POST"));
@@ -63,5 +60,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
+    }
+    
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new RedirectFilter();
     }
 }

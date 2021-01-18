@@ -1,7 +1,9 @@
-
+.gradle
 # Created by https://www.gitignore.io/api/java,eclipse,java-web
 # Edit at https://www.gitignore.io/?templates=java,eclipse,java-web
-
+.idea
+.DS_Store
+build
 ### Eclipse ###
 .metadata
 bin/

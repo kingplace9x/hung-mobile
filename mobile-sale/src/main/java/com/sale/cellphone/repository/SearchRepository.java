@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.mysql.cj.util.StringUtils;
 import com.sale.cellphone.dto.SearchDTO;
 import com.sale.cellphone.entities.SanPham;
 
@@ -28,7 +27,7 @@ public class SearchRepository {
 		findQueryStr.append("FROM com.sale.cellphone.entities.SanPham SP where 1=1 ");
 		countQueryStr.append("Select count(SP.idSanPham) FROM com.sale.cellphone.entities.SanPham SP where 1=1 ");
 		
-		if(!StringUtils.isEmptyOrWhitespaceOnly(dto.getName())) {
+		if(dto.getName() != null) {
 			findQueryStr.append(" AND SP.name LIKE :name");
 			countQueryStr.append(" AND SP.name LIKE :name");
 			enableName = true;

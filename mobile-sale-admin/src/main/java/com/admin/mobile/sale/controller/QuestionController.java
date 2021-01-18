@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.admin.mobile.sale.entities.HoiDap;
 import com.admin.mobile.sale.repository.HoiDapRepository;
 import com.admin.mobile.sale.service.HoidapService;
-import com.mysql.cj.util.StringUtils;
+
 
 @Controller
 public class QuestionController {
@@ -29,7 +29,7 @@ public class QuestionController {
 		System.out.println("idsp=" + idSP);
 		List<HoiDap> listHoiDap = null;
 
-		status = StringUtils.isNullOrEmpty(status) ? "all" : status;
+//		status = "all" : status;
 
 		switch (status) {
 		case "replied":

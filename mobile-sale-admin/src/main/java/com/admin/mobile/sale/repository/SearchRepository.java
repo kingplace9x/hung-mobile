@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.admin.mobile.sale.dto.SearchDTO;
 import com.admin.mobile.sale.entities.SanPham;
-import com.mysql.cj.util.StringUtils;
 
 
 @Repository
@@ -29,7 +28,7 @@ public class SearchRepository {
 		findQueryStr.append("FROM com.admin.mobile.sale.entities.SanPham SP where 1=1 ");
 		countQueryStr.append("Select count(SP.idSanPham) FROM com.admin.mobile.sale.entities.SanPham SP where 1=1 ");
 		
-		if(!StringUtils.isEmptyOrWhitespaceOnly(dto.getName())) {
+		if(dto.getName() != null) {
 			findQueryStr.append(" AND SP.name LIKE :name");
 			countQueryStr.append(" AND SP.name LIKE :name");
 			enableName = true;

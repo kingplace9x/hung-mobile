@@ -16,7 +16,6 @@ import com.admin.mobile.sale.entities.ChiTietHoaDon;
 import com.admin.mobile.sale.entities.HoaDon;
 import com.admin.mobile.sale.enums.StatusOrder;
 import com.admin.mobile.sale.repository.HoaDonRepository;
-import com.mysql.cj.util.StringUtils;
 
 
 @Service
@@ -78,7 +77,7 @@ public class TraCuuHoaDonService {
 
 	public Page<HoaDonDTO> getByStatusOrName(String name, String status, Pageable pageable) {
 		Page<HoaDon> page = null;
-		if(!StringUtils.isEmptyOrWhitespaceOnly(name)) {
+		if(name != null) {
 			page = hoaDonRepository.findAllByKhachHangNameLikeOrKhachHangEmailLikeOrKhachHangPhoneLike("%" + name + "%", "%" + name + "%","%" + name + "%", pageable);
 		}else if(status.equals("0")) {
 			page = hoaDonRepository.findAll(pageable);
